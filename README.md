@@ -34,17 +34,26 @@ A comprehensive enterprise application for managing logistics contracts, service
 ### 1. GLMS Dashbaord
 ![image alt](https://github.com/Leendouh/GLMS.Enterprise/blob/842edece6938a28a7cc45541291e810cd517e7ef/Docs/GLMS%20Dashbaord.png)
 
-### 2. Currency Conversion Example (USD 1250 → ZAR 20875.00 at rate 16.70)
-![Currency Conversion](Docs/CurrencyConversion.png)
+### 2. Clients Dashboard
+![image alt](https://github.com/Leendouh/GLMS.Enterprise/blob/6f14b7ceb5565413ca15d0e5f5ee2c9230c90671/Docs/GLMS%20Clients.png)
 
-### 3. Expired/On‑Hold Contract Not in Dropdown
-![Expired Contract Hidden](Docs/ExpiredNotInDropdown.png)
+### 3. Contract Dashbaord
+![image alt](https://github.com/Leendouh/GLMS.Enterprise/blob/6f14b7ceb5565413ca15d0e5f5ee2c9230c90671/Docs/GLMS%20Contract.png)
 
-### 4. Search and Filter Interface
-![Search Interface](Docs/SearchInterface.png)
+### 4. microsoft sql server 
+![image alt](https://github.com/Leendouh/GLMS.Enterprise/blob/6f14b7ceb5565413ca15d0e5f5ee2c9230c90671/Docs/GLMS%20SQL.png)
 
-### 5. Service Request Creation
-![Service Request Creation](Docs/ServiceRequestCreation.png)
+### 5. Search/Filter Contracts
+![image alt](https://github.com/Leendouh/GLMS.Enterprise/blob/6f14b7ceb5565413ca15d0e5f5ee2c9230c90671/Docs/GLMS%20Search%20Contract.png)
+
+### 6. Service Request Details
+![image alt](https://github.com/Leendouh/GLMS.Enterprise/blob/6f14b7ceb5565413ca15d0e5f5ee2c9230c90671/Docs/GLMS%20Service%20Request%20Details.png)
+
+### 7. Edit Service Request 
+![image alt](https://github.com/Leendouh/GLMS.Enterprise/blob/6f14b7ceb5565413ca15d0e5f5ee2c9230c90671/Docs/GLMS%20Service%20Request%20Edit.png)
+
+### 8. GLMS Test Units
+![image alt](https://github.com/Leendouh/GLMS.Enterprise/blob/6f14b7ceb5565413ca15d0e5f5ee2c9230c90671/Docs/GLMS%20Test%20Units.png)
 
 ---
 
