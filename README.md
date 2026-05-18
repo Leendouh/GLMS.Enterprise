@@ -6,8 +6,8 @@ A comprehensive enterprise application for managing logistics contracts, service
 
 ## POE Part 1 & Part 2 Submission
 
-**Student Name:** [Your Name]  
-**Student Number:** [Your ST Number]  
+**Student Name:** Lindokuhle Zwane 
+**Student Number:** ST10381088 
 **Module:** EAPD7111  
 **Date:** May 2026  
 
