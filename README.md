@@ -31,8 +31,8 @@ A comprehensive enterprise application for managing logistics contracts, service
 
 ## 📸 Screenshots of Key Functionality
 
-### 1. GLMS Video Demonstration 
-![video alt](https://github.com/Leendouh/GLMS.Enterprise/blob/5abb1cf2d4e1fd126ee22fbc12c461dc40486773/Docs/GLMS%20Video.mp4)
+### 1. GLMS Video Demonstration on YouTube
+https://youtu.be/LPJCOtdcZwk 
 
 ### 2. GLMS Dashbaord
 ![image alt](https://github.com/Leendouh/GLMS.Enterprise/blob/842edece6938a28a7cc45541291e810cd517e7ef/Docs/GLMS%20Dashbaord.png)
