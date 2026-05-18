@@ -1,3 +1,4 @@
+using GLMS.Enterprise.Core.Interfaces;
 using GLMS.Enterprise.Services.Currency;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
@@ -11,70 +12,58 @@ public class CachedCurrencyStrategyTests
     [Fact]
     public async Task CachedCurrencyStrategy_Convert_ZeroAmount_Returns_Zero()
     {
-        // Arrange
-        var mockInner = new Mock<LiveApiCurrencyStrategy>();
-        var mockCache = new MemoryCache(new MemoryCacheOptions());
-        var mockLogger = new Mock<ILogger<CachedCurrencyStrategy>>();
-        var strategy = new CachedCurrencyStrategy(mockInner.Object, mockCache, mockLogger.Object);
+        var mockInner = new Mock<ICurrencyStrategy>();
+        var strategy = CreateStrategy(mockInner.Object);
 
-        // Act
         var result = await strategy.ConvertAsync(0m, "USD", "ZAR");
 
-        // Assert
         Assert.Equal(0m, result);
+        mockInner.Verify(x => x.GetRateAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
     }
 
     [Fact]
     public async Task CachedCurrencyStrategy_Convert_NegativeAmount_Throws_ArgumentOutOfRangeException()
     {
-        // Arrange
-        var mockInner = new Mock<LiveApiCurrencyStrategy>();
-        var mockCache = new MemoryCache(new MemoryCacheOptions());
-        var mockLogger = new Mock<ILogger<CachedCurrencyStrategy>>();
-        var strategy = new CachedCurrencyStrategy(mockInner.Object, mockCache, mockLogger.Object);
+        var mockInner = new Mock<ICurrencyStrategy>();
+        var strategy = CreateStrategy(mockInner.Object);
 
-        // Act & Assert
         await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() =>
             strategy.ConvertAsync(-100m, "USD", "ZAR"));
     }
 
     [Fact]
-    public async Task CachedCurrencyStrategy_Convert_SameCurrency_Returns_SameAmount()
+    public async Task CachedCurrencyStrategy_Convert_SameCurrency_UsesInnerRate()
     {
-        // Arrange
-        var mockInner = new Mock<LiveApiCurrencyStrategy>();
-        var mockCache = new MemoryCache(new MemoryCacheOptions());
-        var mockLogger = new Mock<ILogger<CachedCurrencyStrategy>>();
-        var strategy = new CachedCurrencyStrategy(mockInner.Object, mockCache, mockLogger.Object);
-        decimal amount = 100m;
+        var mockInner = new Mock<ICurrencyStrategy>();
+        mockInner.Setup(x => x.GetRateAsync("USD", "USD")).ReturnsAsync(1m);
+        var strategy = CreateStrategy(mockInner.Object);
 
-        // Act
-        var result = await strategy.ConvertAsync(amount, "USD", "USD");
+        var result = await strategy.ConvertAsync(100m, "USD", "USD");
 
-        // Assert
-        Assert.Equal(amount, result);
+        Assert.Equal(100m, result);
     }
 
     [Fact]
     public async Task CachedCurrencyStrategy_CachesRate_SecondCall_UsesCache()
     {
-        // Arrange
-        var mockInner = new Mock<LiveApiCurrencyStrategy>();
+        var mockInner = new Mock<ICurrencyStrategy>();
         mockInner.Setup(x => x.GetRateAsync("USD", "ZAR"))
-            .ReturnsAsync(18.50m)
-            .Verifiable();
+            .ReturnsAsync(18.50m);
 
-        var mockCache = new MemoryCache(new MemoryCacheOptions());
-        var mockLogger = new Mock<ILogger<CachedCurrencyStrategy>>();
-        var strategy = new CachedCurrencyStrategy(mockInner.Object, mockCache, mockLogger.Object);
+        var strategy = CreateStrategy(mockInner.Object);
 
-        // Act - First call should hit the inner strategy
         var rate1 = await strategy.GetRateAsync("USD", "ZAR");
         var rate2 = await strategy.GetRateAsync("USD", "ZAR");
 
-        // Assert
         Assert.Equal(18.50m, rate1);
         Assert.Equal(18.50m, rate2);
-        mockInner.Verify(x => x.GetRateAsync("USD", "ZAR"), Times.Once); // Only called once due to cache
+        mockInner.Verify(x => x.GetRateAsync("USD", "ZAR"), Times.Once);
+    }
+
+    private static CachedCurrencyStrategy CreateStrategy(ICurrencyStrategy inner)
+    {
+        var cache = new MemoryCache(new MemoryCacheOptions());
+        var logger = new Mock<ILogger<CachedCurrencyStrategy>>();
+        return new CachedCurrencyStrategy(inner, cache, logger.Object);
     }
 }

@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using GLMS.Enterprise.Core.Entities;
 using GLMS.Enterprise.Core.Enums;
 using GLMS.Enterprise.Core.Interfaces;
+using GLMS.Enterprise.Core.Models;
 using GLMS.Enterprise.Infrastructure.Data;
 
 namespace GLMS.Enterprise.Infrastructure.Repositories;
@@ -31,6 +32,8 @@ public class ContractRepository : IContractRepository
     {
         return await _context.Contracts
             .Include(c => c.Client)
+            .Include(c => c.ServiceRequests)
+            .AsNoTracking()
             .OrderByDescending(c => c.CreatedAt)
             .ToListAsync();
     }
@@ -42,6 +45,57 @@ public class ContractRepository : IContractRepository
             .Where(c => c.Status == ContractStatus.Active)
             .OrderByDescending(c => c.StartDate)
             .ToListAsync();
+    }
+
+    public async Task<IEnumerable<Contract>> GetEligibleForServiceRequestAsync()
+    {
+        var today = DateTime.Today;
+        return await _context.Contracts
+            .Include(c => c.Client)
+            .Where(c => c.Status == ContractStatus.Active && c.EndDate >= today)
+            .OrderBy(c => c.Client!.Name)
+            .AsNoTracking()
+            .ToListAsync();
+    }
+
+    public async Task<PagedResult<Contract>> SearchAsync(
+        DateTime? startDateFrom,
+        DateTime? startDateTo,
+        ContractStatus? status,
+        int page,
+        int pageSize)
+    {
+        page = Math.Max(1, page);
+        pageSize = Math.Clamp(pageSize, 1, 50);
+
+        IQueryable<Contract> query = _context.Contracts
+            .Include(c => c.Client)
+            .Include(c => c.ServiceRequests)
+            .AsNoTracking();
+
+        if (startDateFrom.HasValue)
+            query = query.Where(c => c.StartDate >= startDateFrom.Value);
+
+        if (startDateTo.HasValue)
+            query = query.Where(c => c.StartDate <= startDateTo.Value);
+
+        if (status.HasValue)
+            query = query.Where(c => c.Status == status.Value);
+
+        var totalCount = await query.CountAsync();
+        var items = await query
+            .OrderByDescending(c => c.StartDate)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return new PagedResult<Contract>
+        {
+            Items = items,
+            TotalCount = totalCount,
+            Page = page,
+            PageSize = pageSize
+        };
     }
 
     public async Task<IEnumerable<Contract>> GetByDateRangeAsync(DateTime start, DateTime end)

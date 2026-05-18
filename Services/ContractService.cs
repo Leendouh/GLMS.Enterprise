@@ -21,7 +21,7 @@ public class ContractService : IContractService
     {
         [ContractStatus.Draft]      = new() { ContractStatus.Active },
         [ContractStatus.Active]     = new() { ContractStatus.OnHold, ContractStatus.Expired, ContractStatus.Terminated },
-        [ContractStatus.OnHold]     = new() { ContractStatus.Active, ContractStatus.Terminated },
+        [ContractStatus.OnHold]     = new() { ContractStatus.Active, ContractStatus.Expired, ContractStatus.Terminated },
         [ContractStatus.Expired]    = new() { ContractStatus.Terminated },
         [ContractStatus.Terminated] = new() { /* terminal state — no transitions */ }
     };
@@ -33,19 +33,33 @@ public class ContractService : IContractService
     }
 
     /// <summary>
-    /// Returns true only if the contract exists and is Active.
-    /// An Expired or OnHold contract cannot accept new ServiceRequests.
+    /// Returns true only if the contract is Active and not past its end date (R1).
     /// </summary>
     public async Task<bool> CanCreateServiceRequestAsync(Guid contractId)
+        => await GetServiceRequestCreationErrorAsync(contractId) is null;
+
+    /// <summary>
+    /// Returns a user-facing error when a service request cannot be created; null if allowed.
+    /// </summary>
+    public async Task<string?> GetServiceRequestCreationErrorAsync(Guid contractId)
     {
         if (contractId == Guid.Empty)
-            return false;
+            return "Please select a contract.";
 
         var contract = await _contractRepository.GetByIdAsync(contractId);
         if (contract == null)
-            return false;
+            return "Contract not found.";
 
-        return contract.Status == ContractStatus.Active;
+        if (contract.Status == ContractStatus.OnHold)
+            return "Cannot create service request. Contract is On Hold.";
+
+        if (contract.Status == ContractStatus.Expired || contract.EndDate.Date < DateTime.Today)
+            return "Cannot create service request. Contract is Expired.";
+
+        if (contract.Status != ContractStatus.Active)
+            return $"Cannot create service request. Contract is {contract.Status}.";
+
+        return null;
     }
 
     /// <summary>

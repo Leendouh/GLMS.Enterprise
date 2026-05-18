@@ -32,7 +32,7 @@ public class ExchangeRateApiService : IExchangeRateApiService
         fromCurrency = (fromCurrency ?? "USD").ToUpperInvariant();
         toCurrency   = (toCurrency   ?? "ZAR").ToUpperInvariant();
 
-        // Retry up to 3 times with exponential back-off
+        // Retry up to 3 times with exponential back-off (T5).
         for (int attempt = 1; attempt <= 3; attempt++)
         {
             try
@@ -70,7 +70,7 @@ public class ExchangeRateApiService : IExchangeRateApiService
             }
 
             if (attempt < 3)
-                await Task.Delay(TimeSpan.FromSeconds(Math.Pow(2, attempt))); // 2s, 4s
+                await Task.Delay(TimeSpan.FromSeconds(Math.Pow(2, attempt)));
         }
 
         _logger.LogWarning("All retry attempts failed. Returning fallback rate {Rate}.", FallbackUsdToZar);

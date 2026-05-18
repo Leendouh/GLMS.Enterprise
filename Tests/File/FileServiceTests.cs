@@ -214,6 +214,29 @@ public class FileServiceTests
         Assert.False(result);
     }
 
+    [Fact]
+    public async Task SavePdfAsync_ValidPdf_SavesWithGuidPrefix()
+    {
+        var content = new byte[] { 0x25, 0x50, 0x44, 0x46, 0x2D, 0x31, 0x2E, 0x34 };
+        var file = CreateMockFormFile("agreement.pdf", content.Length, "application/pdf", content);
+        var folder = Path.Combine(Path.GetTempPath(), "glms-tests", Guid.NewGuid().ToString());
+
+        try
+        {
+            var (success, filePath, error) = await _fileService.SavePdfAsync(file, folder);
+
+            Assert.True(success);
+            Assert.Empty(error);
+            Assert.Matches(@"^[0-9a-fA-F-]{36}_agreement\.pdf$", filePath);
+            Assert.True(System.IO.File.Exists(Path.Combine(folder, filePath)));
+        }
+        finally
+        {
+            if (Directory.Exists(folder))
+                Directory.Delete(folder, true);
+        }
+    }
+
     private IFormFile CreateMockFormFile(string fileName, long length, string contentType, byte[]? content = null)
     {
         var mockFile = new Mock<IFormFile>();

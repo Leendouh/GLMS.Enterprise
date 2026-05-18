@@ -1,0 +1,176 @@
+@model GLMS.Enterprise.Web.Models.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<!-- Page Header -->
+<div class="glms-page-header">
+    <div>
+        <h1 class="glms-page-title">Dashboard</h1>
+        <p class="glms-page-subtitle">Welcome back! Here's what's happening with your logistics management.</p>
+    </div>
+    <div class="d-flex gap-2">
+        <span class="nav-badge">
+            <i class="bi bi-circle-fill text-success" style="font-size:.6rem"></i>
+            <span class="text-white-50 small">Live</span>
+        </span>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row g-4 mb-4">
+    <div class="col-xl-3 col-md-6">
+        <div class="glms-stat-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="stat-label">Total Clients</div>
+                    <div class="stat-value">@Model.TotalClients</div>
+                </div>
+                <i class="bi bi-people stat-icon text-primary"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="glms-stat-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="stat-label">Total Contracts</div>
+                    <div class="stat-value">@Model.TotalContracts</div>
+                </div>
+                <i class="bi bi-file-earmark-text stat-icon text-success"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="glms-stat-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="stat-label">Active Contracts</div>
+                    <div class="stat-value">@Model.ActiveContracts</div>
+                </div>
+                <i class="bi bi-check-circle stat-icon text-info"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="glms-stat-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="stat-label">Pending Requests</div>
+                    <div class="stat-value">@Model.PendingRequests</div>
+                </div>
+                <i class="bi bi-clock stat-icon text-warning"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="row g-4">
+    <!-- Recent Contracts -->
+    <div class="col-lg-8">
+        <div class="glms-card">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="mb-0">Recent Contracts</h5>
+                <a asp-controller="Contract" asp-action="Index" class="text-decoration-none" style="color: var(--glms-accent)">
+                    View All <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+            @if (Model.RecentContracts.Any())
+            {
+                <div class="table-responsive">
+                    <table class="glms-table">
+                        <thead>
+                            <tr>
+                                <th>Contract ID</th>
+                                <th>Client</th>
+                                <th>Status</th>
+                                <th>Created</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var contract in Model.RecentContracts)
+                            {
+                                <tr>
+                                    <td><span class="text-muted">#@contract.Id.ToString().Substring(0, 8)</span></td>
+                                    <td>@contract.Client?.Name</td>
+                                    <td>
+                                        @switch (contract.Status.ToString())
+                                        {
+                                            case "Active":
+                                                <span class="status-badge status-active">Active</span>
+                                                break;
+                                            case "Pending":
+                                                <span class="status-badge status-pending">Pending</span>
+                                                break;
+                                            case "OnHold":
+                                                <span class="status-badge status-onhold">On Hold</span>
+                                                break;
+                                            case "Expired":
+                                                <span class="status-badge status-expired">Expired</span>
+                                                break;
+                                            case "Terminated":
+                                                <span class="status-badge status-terminated">Terminated</span>
+                                                break;
+                                            default:
+                                                <span class="status-badge status-draft">@contract.Status</span>
+                                                break;
+                                        }
+                                    </td>
+                                    <td>@contract.CreatedAt.ToString("MMM dd, yyyy")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-inbox" style="font-size: 3rem; color: var(--glms-text-muted)"></i>
+                    <p class="text-muted mt-3">No contracts found. Create your first contract to get started.</p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="col-lg-4">
+        <div class="glms-card">
+            <h5 class="mb-4">Quick Actions</h5>
+            <div class="d-grid gap-3">
+                <a asp-controller="Client" asp-action="Create" class="btn btn-glms-primary btn-icon">
+                    <i class="bi bi-person-plus"></i> Add New Client
+                </a>
+                <a asp-controller="Contract" asp-action="Create" class="btn btn-glms-primary btn-icon">
+                    <i class="bi bi-file-earmark-plus"></i> Create Contract
+                </a>
+                <a asp-controller="ServiceRequest" asp-action="Create" class="btn btn-glms-secondary btn-icon">
+                    <i class="bi bi-clipboard-plus"></i> New Service Request
+                </a>
+                <a asp-controller="Contract" asp-action="Search" class="btn btn-glms-secondary btn-icon">
+                    <i class="bi bi-search"></i> Search Contracts
+                </a>
+            </div>
+
+            <hr class="my-4" style="border-color: var(--glms-border)">
+
+            <h5 class="mb-3">System Status</h5>
+            <div class="d-flex flex-column gap-2">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-muted small">Database</span>
+                    <span class="text-success small"><i class="bi bi-check-circle-fill"></i> Connected</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-muted small">Currency API</span>
+                    <span class="text-success small"><i class="bi bi-check-circle-fill"></i> Active</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-muted small">Last Sync</span>
+                    <span class="text-muted small">@DateTime.Now.ToString("HH:mm:ss")</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

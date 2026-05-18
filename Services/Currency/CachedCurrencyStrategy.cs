@@ -10,12 +10,12 @@ namespace GLMS.Enterprise.Services.Currency;
 /// </summary>
 public class CachedCurrencyStrategy : ICurrencyStrategy
 {
-    private readonly LiveApiCurrencyStrategy _inner;
+    private readonly ICurrencyStrategy _inner;
     private readonly IMemoryCache _cache;
     private readonly ILogger<CachedCurrencyStrategy> _logger;
     private static readonly TimeSpan CacheTtl = TimeSpan.FromMinutes(15);
 
-    public CachedCurrencyStrategy(LiveApiCurrencyStrategy inner,
+    public CachedCurrencyStrategy(ICurrencyStrategy inner,
                                    IMemoryCache cache,
                                    ILogger<CachedCurrencyStrategy> logger)
     {

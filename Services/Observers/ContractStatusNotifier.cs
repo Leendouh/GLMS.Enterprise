@@ -11,9 +11,15 @@ public class ContractStatusNotifier : IContractStatusSubject
     private readonly List<IContractStatusObserver> _observers = new();
     private readonly ILogger<ContractStatusNotifier> _logger;
 
-    public ContractStatusNotifier(ILogger<ContractStatusNotifier> logger)
+    public ContractStatusNotifier(
+        ILogger<ContractStatusNotifier> logger,
+        IEnumerable<IContractStatusObserver> observers)
     {
         _logger = logger;
+        foreach (var observer in observers)
+        {
+            RegisterObserver(observer);
+        }
     }
 
     public void RegisterObserver(IContractStatusObserver observer)

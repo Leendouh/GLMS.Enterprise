@@ -44,33 +44,30 @@ public class ContractController : Controller
 
     // ── Search / Filter ───────────────────────────────────────────────────────
     [HttpGet]
-    public async Task<IActionResult> Search(DateTime? startDateFrom, DateTime? startDateTo, ContractStatus? status)
+    public async Task<IActionResult> Search(
+        DateTime? startDateFrom,
+        DateTime? startDateTo,
+        ContractStatus? status,
+        int page = 1,
+        int pageSize = 10)
     {
         var vm = new ContractSearchViewModel
         {
             StartDateFrom = startDateFrom,
             StartDateTo   = startDateTo,
             Status        = status,
+            Page          = page,
+            PageSize      = pageSize,
             HasSearched   = Request.Query.Count > 0
         };
 
         if (vm.HasSearched)
         {
-            // Build LINQ query with optional filters
-            IQueryable<Contract> query = _db.Contracts.Include(c => c.Client);
-
-            if (startDateFrom.HasValue)
-                query = query.Where(c => c.StartDate >= startDateFrom.Value);
-
-            if (startDateTo.HasValue)
-                query = query.Where(c => c.StartDate <= startDateTo.Value);
-
-            if (status.HasValue)
-                query = query.Where(c => c.Status == status.Value);
-
-            var results = await query.OrderByDescending(c => c.StartDate).ToListAsync();
-
-            vm.Results = results.Select(c => new ContractViewModel
+            var paged = await _contractRepo.SearchAsync(startDateFrom, startDateTo, status, page, pageSize);
+            vm.TotalCount = paged.TotalCount;
+            vm.Page = paged.Page;
+            vm.PageSize = paged.PageSize;
+            vm.Results = paged.Items.Select(c => new ContractViewModel
             {
                 Id                  = c.Id,
                 ClientId            = c.ClientId,

@@ -12,17 +12,20 @@ namespace GLMS.Enterprise.Web.Controllers;
 public class ServiceRequestController : Controller
 {
     private readonly ApplicationDbContext _db;
+    private readonly IContractRepository  _contractRepo;
     private readonly IContractService     _contractService;
     private readonly ICurrencyStrategy    _currencyStrategy;
     private readonly IExchangeRateApiService _rateService;
 
     public ServiceRequestController(
         ApplicationDbContext     db,
+        IContractRepository      contractRepo,
         IContractService         contractService,
         ICurrencyStrategy        currencyStrategy,
         IExchangeRateApiService  rateService)
     {
         _db               = db;
+        _contractRepo     = contractRepo;
         _contractService  = contractService;
         _currencyStrategy = currencyStrategy;
         _rateService      = rateService;
@@ -53,14 +56,12 @@ public class ServiceRequestController : Controller
     // ── Create GET ────────────────────────────────────────────────────────────
     public async Task<IActionResult> Create(Guid? contractId)
     {
-        // Fetch live rate for display
-        var rate = await _rateService.GetUsdToZarRateAsync();
-
+        // Use fallback on page load; live rate is fetched via GetExchangeRate (AJAX).
         var vm = new ServiceRequestViewModel
         {
             ContractId          = contractId ?? Guid.Empty,
-            CurrentExchangeRate = rate,
-            RateFromApi         = true
+            CurrentExchangeRate = 18.50m,
+            RateFromApi         = false
         };
         await PopulateContractDropdown(vm);
         return View(vm);
@@ -74,15 +75,9 @@ public class ServiceRequestController : Controller
         // Workflow rule: check contract status before saving
         if (model.ContractId != Guid.Empty)
         {
-            var canCreate = await _contractService.CanCreateServiceRequestAsync(model.ContractId);
-            if (!canCreate)
-            {
-                var contract = await _db.Contracts.FindAsync(model.ContractId);
-                var status   = contract?.Status.ToString() ?? "Unknown";
-                ModelState.AddModelError(string.Empty,
-                    $"Cannot create a service request. The contract is currently '{status}'. " +
-                    "Only Active contracts accept new service requests.");
-            }
+            var error = await _contractService.GetServiceRequestCreationErrorAsync(model.ContractId);
+            if (error != null)
+                ModelState.AddModelError(string.Empty, error);
         }
 
         if (!ModelState.IsValid)
@@ -217,11 +212,7 @@ public class ServiceRequestController : Controller
     // ── Helpers ───────────────────────────────────────────────────────────────
     private async Task PopulateContractDropdown(ServiceRequestViewModel vm)
     {
-        var contracts = await _db.Contracts
-            .Include(c => c.Client)
-            .Where(c => c.Status == ContractStatus.Active)
-            .OrderBy(c => c.Client.Name)
-            .ToListAsync();
+        var contracts = await _contractRepo.GetEligibleForServiceRequestAsync();
 
         vm.ContractSelectList = contracts.Select(c => new SelectListItem
         {
@@ -233,7 +224,7 @@ public class ServiceRequestController : Controller
         // If editing/prefilling a non-active contract, add it too
         if (vm.ContractId != Guid.Empty && !vm.ContractSelectList.Any(x => x.Value == vm.ContractId.ToString()))
         {
-            var existing = await _db.Contracts.Include(c => c.Client).FirstOrDefaultAsync(c => c.Id == vm.ContractId);
+            var existing = await _contractRepo.GetByIdAsync(vm.ContractId);
             if (existing != null)
             {
                 vm.ContractSelectList.Insert(0, new SelectListItem

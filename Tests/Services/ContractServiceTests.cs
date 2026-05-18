@@ -134,6 +134,72 @@ public class ContractServiceTests
     }
 
     [Fact]
+    public async Task CanCreateServiceRequestAsync_ActiveButPastEndDate_ReturnsFalse()
+    {
+        var contractId = Guid.NewGuid();
+        var contract = new Contract
+        {
+            Id = contractId,
+            ClientId = Guid.NewGuid(),
+            Status = ContractStatus.Active,
+            StartDate = DateTime.Today.AddYears(-2),
+            EndDate = DateTime.Today.AddDays(-1)
+        };
+        _mockRepo.Setup(r => r.GetByIdAsync(contractId)).ReturnsAsync(contract);
+
+        var result = await _contractService.CanCreateServiceRequestAsync(contractId);
+
+        Assert.False(result);
+    }
+
+    [Fact]
+    public async Task GetServiceRequestCreationErrorAsync_OnHold_ReturnsSpecMessage()
+    {
+        var contractId = Guid.NewGuid();
+        _mockRepo.Setup(r => r.GetByIdAsync(contractId)).ReturnsAsync(new Contract
+        {
+            Id = contractId,
+            Status = ContractStatus.OnHold,
+            EndDate = DateTime.Today.AddMonths(1)
+        });
+
+        var error = await _contractService.GetServiceRequestCreationErrorAsync(contractId);
+
+        Assert.Equal("Cannot create service request. Contract is On Hold.", error);
+    }
+
+    [Fact]
+    public async Task GetServiceRequestCreationErrorAsync_ExpiredByDate_ReturnsSpecMessage()
+    {
+        var contractId = Guid.NewGuid();
+        _mockRepo.Setup(r => r.GetByIdAsync(contractId)).ReturnsAsync(new Contract
+        {
+            Id = contractId,
+            Status = ContractStatus.Active,
+            EndDate = DateTime.Today.AddDays(-5)
+        });
+
+        var error = await _contractService.GetServiceRequestCreationErrorAsync(contractId);
+
+        Assert.Equal("Cannot create service request. Contract is Expired.", error);
+    }
+
+    [Fact]
+    public async Task ValidateContractStatusTransitionAsync_OnHoldToExpired_ReturnsSuccess()
+    {
+        var contractId = Guid.NewGuid();
+        _mockRepo.Setup(r => r.GetByIdAsync(contractId)).ReturnsAsync(new Contract
+        {
+            Id = contractId,
+            Status = ContractStatus.OnHold
+        });
+
+        var result = await _contractService.ValidateContractStatusTransitionAsync(contractId, ContractStatus.Expired);
+
+        Assert.True(result.IsValid);
+    }
+
+    [Fact]
     public async Task ValidateContractStatusTransitionAsync_DraftToActive_ReturnsSuccess()
     {
         // Arrange

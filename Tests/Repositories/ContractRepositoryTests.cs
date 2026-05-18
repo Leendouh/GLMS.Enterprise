@@ -309,4 +309,35 @@ public class ContractRepositoryTests : IDisposable
         // Assert
         Assert.False(result);
     }
+
+    [Fact]
+    public async Task SearchAsync_ReturnsPagedResults()
+    {
+        var client = await CreateTestClientAsync();
+        for (var i = 0; i < 5; i++)
+            await CreateTestContractAsync(client, ContractStatus.Active);
+
+        var page1 = await _repository.SearchAsync(null, null, ContractStatus.Active, page: 1, pageSize: 2);
+        var page2 = await _repository.SearchAsync(null, null, ContractStatus.Active, page: 2, pageSize: 2);
+
+        Assert.Equal(5, page1.TotalCount);
+        Assert.Equal(2, page1.Items.Count);
+        Assert.Equal(2, page2.Items.Count);
+        Assert.Equal(2, page2.Page);
+    }
+
+    [Fact]
+    public async Task GetEligibleForServiceRequestAsync_ExcludesExpiredByDate()
+    {
+        var client = await CreateTestClientAsync();
+        var eligible = await CreateTestContractAsync(client, ContractStatus.Active);
+        var pastEnd = await CreateTestContractAsync(client, ContractStatus.Active);
+        pastEnd.EndDate = DateTime.Today.AddDays(-1);
+        await _repository.UpdateAsync(pastEnd);
+
+        var result = (await _repository.GetEligibleForServiceRequestAsync()).ToList();
+
+        Assert.Contains(result, c => c.Id == eligible.Id);
+        Assert.DoesNotContain(result, c => c.Id == pastEnd.Id);
+    }
 }

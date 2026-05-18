@@ -6,5 +6,6 @@ namespace GLMS.Enterprise.Core.Interfaces;
 public interface IContractService
 {
     Task<bool> CanCreateServiceRequestAsync(Guid contractId);
+    Task<string?> GetServiceRequestCreationErrorAsync(Guid contractId);
     Task<ValidationResult> ValidateContractStatusTransitionAsync(Guid contractId, ContractStatus newStatus);
 }

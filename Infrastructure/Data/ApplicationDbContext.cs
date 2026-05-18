@@ -73,6 +73,8 @@ public class ApplicationDbContext : DbContext
             entity.Property(e => e.ContractId).IsRequired();
             entity.Property(e => e.Description).IsRequired().HasMaxLength(500);
             entity.Property(e => e.AmountUSD).IsRequired().HasColumnType("decimal(18,2)");
+            entity.ToTable(t =>
+                t.HasCheckConstraint("CK_ServiceRequest_AmountUSD_Positive", "[AmountUSD] > 0"));
             entity.Property(e => e.AmountZAR).IsRequired().HasColumnType("decimal(18,2)");
             entity.Property(e => e.ExchangeRateUsed).IsRequired().HasColumnType("decimal(18,6)");
             entity.Property(e => e.Status)
