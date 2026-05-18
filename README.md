@@ -32,7 +32,7 @@ A comprehensive enterprise application for managing logistics contracts, service
 ## 📸 Screenshots of Key Functionality
 
 ### 1. GLMS Dashbaord
-Docs/GLMS Dashbaord.png 
+[Docs/GLMS Dashbaord.png ](https://github.com/Leendouh/GLMS.Enterprise/blob/842edece6938a28a7cc45541291e810cd517e7ef/Docs/GLMS%20Dashbaord.png)
 
 ### 2. Currency Conversion Example (USD 1250 → ZAR 20875.00 at rate 16.70)
 ![Currency Conversion](Docs/CurrencyConversion.png)
