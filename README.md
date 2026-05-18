@@ -32,7 +32,7 @@ A comprehensive enterprise application for managing logistics contracts, service
 ## 📸 Screenshots of Key Functionality
 
 ### 1. GLMS Video Demonstration on YouTube
-https://youtu.be/LPJCOtdcZwk 
+[Click here to watch the video walkthrough](https://youtu.be/LPJCOtdcZwk)
 
 ### 2. GLMS Dashbaord
 ![image alt](https://github.com/Leendouh/GLMS.Enterprise/blob/842edece6938a28a7cc45541291e810cd517e7ef/Docs/GLMS%20Dashbaord.png)
@@ -474,26 +474,6 @@ The application integrates with [ExchangeRate-API.com](https://www.exchangerate-
 }
 ```
 
----
-
-## 📸 Screenshots of Key Functionality
-
-### 1. Contract with Active Status (allows service requests)
-![Active Contract](Docs/ContractActive.png)
-
-### 2. Currency Conversion Example (USD 1250 → ZAR 20875.00 at rate 16.70)
-![Currency Conversion](Docs/CurrencyConversion.png)
-
-### 3. Expired/On‑Hold Contract Not in Dropdown
-![Expired Contract Hidden](Docs/ExpiredNotInDropdown.png)
-
-### 4. Search and Filter Interface
-![Search Interface](Docs/SearchInterface.png)
-
-### 5. Service Request Creation
-![Service Request Creation](Docs/ServiceRequestCreation.png)
-
----
 
 ## 📊 Rubric Compliance
 
@@ -513,7 +493,7 @@ The application integrates with [ExchangeRate-API.com](https://www.exchangerate-
 
 ## 🎥 Video Walkthrough
 
-[Click here to watch the video walkthrough](https://youtu.be/your-unlisted-link)
+[Click here to watch the video walkthrough](https://youtu.be/LPJCOtdcZwk)
 
 *The video demonstrates all required features: contract management, PDF upload/download, service request creation with currency conversion, business rule validation (expired/on‑hold contracts), search/filter, and unit tests.*
 
