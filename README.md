@@ -290,7 +290,7 @@ GLMS.Enterprise/
 
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/yourusername/GLMS.git
+   git clone https://github.com/Leendouh/GLMS.Enterprise.git 
    cd GLMS.Enterprise
    ```
 
@@ -490,7 +490,7 @@ The application integrates with [ExchangeRate-API.com](https://www.exchangerate-
 
 ## 🔗 GitHub Repository
 
-**Repository URL:** [https://github.com/yourusername/GLMS](https://github.com/yourusername/GLMS)
+**Repository URL:** https://github.com/Leendouh/GLMS.Enterprise.git 
 
 ---
 
