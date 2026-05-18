@@ -14,7 +14,7 @@ A comprehensive enterprise application for managing logistics contracts, service
 ---
 
 ## 📋 Table of Contents
-
+- [Screenshots](#screenshots)
 - [Overview](#overview)
 - [Architecture](#architecture)
 - [Technology Stack](#technology-stack)
@@ -25,10 +25,29 @@ A comprehensive enterprise application for managing logistics contracts, service
 - [Database Setup](#database-setup)
 - [Testing](#testing)
 - [API Documentation](#api-documentation)
-- [Screenshots](#screenshots)
 - [Rubric Compliance](#rubric-compliance)
 
 ---
+
+## 📸 Screenshots of Key Functionality
+
+### 1. GLMS Dashbaord
+Docs/GLMS Dashbaord.png 
+
+### 2. Currency Conversion Example (USD 1250 → ZAR 20875.00 at rate 16.70)
+![Currency Conversion](Docs/CurrencyConversion.png)
+
+### 3. Expired/On‑Hold Contract Not in Dropdown
+![Expired Contract Hidden](Docs/ExpiredNotInDropdown.png)
+
+### 4. Search and Filter Interface
+![Search Interface](Docs/SearchInterface.png)
+
+### 5. Service Request Creation
+![Service Request Creation](Docs/ServiceRequestCreation.png)
+
+---
+
 
 ## 🎯 Overview
 
