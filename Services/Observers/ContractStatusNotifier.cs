@@ -41,9 +41,6 @@ public class ContractStatusNotifier : IContractStatusSubject
 
     public void NotifyObservers(Guid contractId, string oldStatus, string newStatus)
     {
-        _logger.LogInformation("Notifying {Count} observers of contract {ContractId} status change: {OldStatus} -> {NewStatus}",
-            _observers.Count, contractId, oldStatus, newStatus);
-
         foreach (var observer in _observers)
         {
             try
