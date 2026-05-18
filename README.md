@@ -31,28 +31,31 @@ A comprehensive enterprise application for managing logistics contracts, service
 
 ## 📸 Screenshots of Key Functionality
 
-### 1. GLMS Dashbaord
+### 1. GLMS Video Demonstration 
+![video alt](https://github.com/Leendouh/GLMS.Enterprise/blob/5abb1cf2d4e1fd126ee22fbc12c461dc40486773/Docs/GLMS%20Video.mp4)
+
+### 2. GLMS Dashbaord
 ![image alt](https://github.com/Leendouh/GLMS.Enterprise/blob/842edece6938a28a7cc45541291e810cd517e7ef/Docs/GLMS%20Dashbaord.png)
 
-### 2. Clients Dashboard
+### 3. Clients Dashboard
 ![image alt](https://github.com/Leendouh/GLMS.Enterprise/blob/6f14b7ceb5565413ca15d0e5f5ee2c9230c90671/Docs/GLMS%20Clients.png)
 
-### 3. Contract Dashbaord
+### 4. Contract Dashbaord
 ![image alt](https://github.com/Leendouh/GLMS.Enterprise/blob/6f14b7ceb5565413ca15d0e5f5ee2c9230c90671/Docs/GLMS%20Contract.png)
 
-### 4. microsoft sql server 
+### 5. Microsoft Sql Server 
 ![image alt](https://github.com/Leendouh/GLMS.Enterprise/blob/6f14b7ceb5565413ca15d0e5f5ee2c9230c90671/Docs/GLMS%20SQL.png)
 
-### 5. Search/Filter Contracts
+### 6. Search/Filter Contracts
 ![image alt](https://github.com/Leendouh/GLMS.Enterprise/blob/6f14b7ceb5565413ca15d0e5f5ee2c9230c90671/Docs/GLMS%20Search%20Contract.png)
 
-### 6. Service Request Details
+### 7. Service Request Details
 ![image alt](https://github.com/Leendouh/GLMS.Enterprise/blob/6f14b7ceb5565413ca15d0e5f5ee2c9230c90671/Docs/GLMS%20Service%20Request%20Details.png)
 
-### 7. Edit Service Request 
+### 8. Edit Service Request 
 ![image alt](https://github.com/Leendouh/GLMS.Enterprise/blob/6f14b7ceb5565413ca15d0e5f5ee2c9230c90671/Docs/GLMS%20Service%20Request%20Edit.png)
 
-### 8. GLMS Test Units
+### 9. GLMS Test Units
 ![image alt](https://github.com/Leendouh/GLMS.Enterprise/blob/6f14b7ceb5565413ca15d0e5f5ee2c9230c90671/Docs/GLMS%20Test%20Units.png)
 
 ---
