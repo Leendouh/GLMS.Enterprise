@@ -4,112 +4,110 @@
     ViewData["Title"] = "Contracts";
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Contracts</h1>
-        <div>
-            <a asp-action="Search" class="btn btn-info me-2">
-                <i class="bi bi-search"></i> Search
-            </a>
-            <a asp-action="Create" class="btn btn-primary">
-                <i class="bi bi-plus-circle"></i> Add New Contract
-            </a>
-        </div>
+<!-- Page Header -->
+<div class="glms-page-header">
+    <div>
+        <h1 class="glms-page-title">Contracts</h1>
+        <p class="glms-page-subtitle">Manage service agreements and contract documentation.</p>
     </div>
+    <div class="d-flex gap-2">
+        <a asp-action="Search" class="btn btn-glms-secondary btn-icon">
+            <i class="bi bi-search"></i> Search
+        </a>
+        <a asp-action="Create" class="btn btn-glms-primary btn-icon">
+            <i class="bi bi-file-earmark-plus"></i> Add New Contract
+        </a>
+    </div>
+</div>
 
-    @if (TempData["Success"] != null)
+<!-- Main Content -->
+<div class="glms-card">
+    @if (Model != null && Model.Any())
     {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            @TempData["Success"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    }
-
-    @if (TempData["Error"] != null)
-    {
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            @TempData["Error"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    }
-
-    <div class="card">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
+        <div class="table-responsive">
+            <table class="glms-table">
+                <thead>
+                    <tr>
+                        <th>Client</th>
+                        <th>Status</th>
+                        <th>Service Level</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Requests</th>
+                        <th>PDF</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var contract in Model)
+                    {
                         <tr>
-                            <th>Client</th>
-                            <th>Status</th>
-                            <th>Service Level</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                            <th>Requests</th>
-                            <th>PDF</th>
-                            <th>Actions</th>
+                            <td><strong>@contract.Client?.Name</strong></td>
+                            <td>
+                                @switch (contract.Status.ToString())
+                                {
+                                    case "Active":
+                                        <span class="status-badge status-active">Active</span>
+                                        break;
+                                    case "Draft":
+                                        <span class="status-badge status-draft">Draft</span>
+                                        break;
+                                    case "OnHold":
+                                        <span class="status-badge status-onhold">On Hold</span>
+                                        break;
+                                    case "Expired":
+                                        <span class="status-badge status-expired">Expired</span>
+                                        break;
+                                    case "Terminated":
+                                        <span class="status-badge status-terminated">Terminated</span>
+                                        break;
+                                    default:
+                                        <span class="status-badge status-draft">@contract.Status</span>
+                                        break;
+                                }
+                            </td>
+                            <td>@contract.ServiceLevel</td>
+                            <td>@contract.StartDate.ToString("MMM dd, yyyy")</td>
+                            <td>@contract.EndDate.ToString("MMM dd, yyyy")</td>
+                            <td>
+                                <span class="badge-count">@contract.ServiceRequests.Count</span>
+                            </td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(contract.PdfFilePath))
+                                {
+                                    <a asp-action="DownloadPdf" asp-route-id="@contract.Id" class="btn btn-glms-icon btn-info" title="Download PDF">
+                                        <i class="bi bi-file-earmark-pdf"></i>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span class="text-muted small">No PDF</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a asp-action="Details" asp-route-id="@contract.Id" class="btn btn-glms-icon btn-info" title="View Details">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@contract.Id" class="btn btn-glms-icon btn-warning" title="Edit">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@contract.Id" class="btn btn-glms-icon btn-danger" title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @if (Model != null && Model.Any())
-                        {
-                            @foreach (var contract in Model)
-                            {
-                                <tr>
-                                    <td><strong>@contract.Client?.Name</strong></td>
-                                    <td>
-                                        <span class="badge @(contract.Status.ToString() switch
-                                        {
-                                            "Active" => "bg-success",
-                                            "Draft" => "bg-secondary",
-                                            "OnHold" => "bg-warning",
-                                            "Expired" => "bg-danger",
-                                            "Terminated" => "bg-dark",
-                                            _ => "bg-secondary"
-                                        })">@contract.Status</span>
-                                    </td>
-                                    <td>@contract.ServiceLevel</td>
-                                    <td>@contract.StartDate.ToString("yyyy-MM-dd")</td>
-                                    <td>@contract.EndDate.ToString("yyyy-MM-dd")</td>
-                                    <td>
-                                        <span class="badge bg-info">@contract.ServiceRequests.Count</span>
-                                    </td>
-                                    <td>
-                                        @if (!string.IsNullOrEmpty(contract.PdfFilePath))
-                                        {
-                                            <a asp-action="DownloadPdf" asp-route-id="@contract.Id" class="btn btn-sm btn-outline-primary">
-                                                <i class="bi bi-file-earmark-pdf"></i> Download
-                                            </a>
-                                        }
-                                        else
-                                        {
-                                            <span class="text-muted">No PDF</span>
-                                        }
-                                    </td>
-                                    <td>
-                                        <div class="btn-group" role="group">
-                                            <a asp-action="Details" asp-route-id="@contract.Id" class="btn btn-sm btn-info">
-                                                <i class="bi bi-eye"></i>
-                                            </a>
-                                            <a asp-action="Edit" asp-route-id="@contract.Id" class="btn btn-sm btn-warning">
-                                                <i class="bi bi-pencil"></i>
-                                            </a>
-                                            <a asp-action="Delete" asp-route-id="@contract.Id" class="btn btn-sm btn-danger">
-                                                <i class="bi bi-trash"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            }
-                        }
-                        else
-                        {
-                            <tr>
-                                <td colspan="8" class="text-center text-muted">No contracts found.</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
+                    }
+                </tbody>
+            </table>
         </div>
-    </div>
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <i class="bi bi-file-earmark-text" style="font-size: 3rem; color: var(--glms-text-muted)"></i>
+            <p class="text-muted mt-3">No contracts found. Click "Add New Contract" to create your first contract.</p>
+        </div>
+    }
 </div>

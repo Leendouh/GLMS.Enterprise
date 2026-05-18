@@ -4,86 +4,93 @@
     ViewData["Title"] = "Edit Contract";
 }
 
-<div class="container mt-4">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a asp-action="Index">Contracts</a></li>
-            <li class="breadcrumb-item active">Edit</li>
-        </ol>
-    </nav>
+<!-- Page Header -->
+<div class="glms-page-header">
+    <div>
+        <h1 class="glms-page-title">Edit Contract</h1>
+        <p class="glms-page-subtitle">Update contract details and documentation.</p>
+    </div>
+</div>
 
-    <div class="card">
-        <div class="card-header">
-            <h3 class="mb-0">Edit Contract</h3>
+<!-- Main Content -->
+<div class="glms-card">
+    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+        <input type="hidden" asp-for="Id" />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="ClientId" class="form-label">Client</label>
+                    <select asp-for="ClientId" asp-items="Model.ClientSelectList" class="form-select" required></select>
+                    <span asp-validation-for="ClientId" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="Status" class="form-label">Status</label>
+                    <select asp-for="Status" class="form-select">
+                        <option value="Draft">Draft</option>
+                        <option value="Active">Active</option>
+                        <option value="OnHold">On Hold</option>
+                        <option value="Expired">Expired</option>
+                        <option value="Terminated">Terminated</option>
+                    </select>
+                    <span asp-validation-for="Status" class="text-danger"></span>
+                </div>
+            </div>
         </div>
-        <div class="card-body">
-            <form asp-action="Edit" method="post" enctype="multipart/form-data">
-                <input type="hidden" asp-for="Id" />
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label asp-for="ClientId" class="form-label">Client</label>
-                        <select asp-for="ClientId" asp-items="Model.ClientSelectList" class="form-select" required></select>
-                        <span asp-validation-for="ClientId" class="text-danger"></span>
-                    </div>
-                    <div class="col-md-6">
-                        <label asp-for="Status" class="form-label">Status</label>
-                        <select asp-for="Status" class="form-select">
-                            <option value="Draft">Draft</option>
-                            <option value="Active">Active</option>
-                            <option value="OnHold">On Hold</option>
-                            <option value="Expired">Expired</option>
-                            <option value="Terminated">Terminated</option>
-                        </select>
-                        <span asp-validation-for="Status" class="text-danger"></span>
-                    </div>
+        <div class="row g-4 mt-1">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="StartDate" class="form-label">Start Date</label>
+                    <input asp-for="StartDate" class="form-control" type="date" required />
+                    <span asp-validation-for="StartDate" class="text-danger"></span>
                 </div>
-
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label asp-for="StartDate" class="form-label"></label>
-                        <input asp-for="StartDate" class="form-control" type="date" required />
-                        <span asp-validation-for="StartDate" class="text-danger"></span>
-                    </div>
-                    <div class="col-md-6">
-                        <label asp-for="EndDate" class="form-label"></label>
-                        <input asp-for="EndDate" class="form-control" type="date" required />
-                        <span asp-validation-for="EndDate" class="text-danger"></span>
-                    </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="EndDate" class="form-label">End Date</label>
+                    <input asp-for="EndDate" class="form-control" type="date" required />
+                    <span asp-validation-for="EndDate" class="text-danger"></span>
                 </div>
+            </div>
+        </div>
 
-                <div class="mb-3">
-                    <label asp-for="ServiceLevel" class="form-label"></label>
-                    <input asp-for="ServiceLevel" class="form-control" />
-                    <span asp-validation-for="ServiceLevel" class="text-danger"></span>
-                </div>
+        <div class="form-group mt-4">
+            <label asp-for="ServiceLevel" class="form-label">Service Level</label>
+            <input asp-for="ServiceLevel" class="form-control" placeholder="e.g., Premium, Standard, Basic" />
+            <span asp-validation-for="ServiceLevel" class="text-danger"></span>
+        </div>
 
-                <div class="mb-3">
-                    <label asp-for="PdfFile" class="form-label">Update Signed Agreement (PDF)</label>
-                    <input asp-for="PdfFile" class="form-control" type="file" accept=".pdf" />
-                    <span asp-validation-for="PdfFile" class="text-danger"></span>
-                    @if (!string.IsNullOrEmpty(Model.PdfFilePath))
-                    {
-                        <small class="text-muted">Current: @Model.OriginalPdfFileName</small>
-                        <br />
-                        <a asp-action="DownloadPdf" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-primary mt-1">
-                            <i class="bi bi-download"></i> Download Current
-                        </a>
-                    }
-                </div>
-
-                <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-save"></i> Save Changes
-                    </button>
-                    <a asp-action="Index" class="btn btn-secondary">
-                        <i class="bi bi-arrow-left"></i> Back to List
+        <div class="form-group mt-4">
+            <label asp-for="PdfFile" class="form-label">Update Signed Agreement (PDF)</label>
+            <input asp-for="PdfFile" class="form-control" type="file" accept=".pdf" />
+            <span asp-validation-for="PdfFile" class="text-danger"></span>
+            @if (!string.IsNullOrEmpty(Model.PdfFilePath))
+            {
+                <div class="mt-2">
+                    <small class="text-muted">Current: @Model.OriginalPdfFileName</small>
+                    <br />
+                    <a asp-action="DownloadPdf" asp-route-id="@Model.Id" class="btn btn-sm btn-glms-secondary mt-1">
+                        <i class="bi bi-download"></i> Download Current
                     </a>
                 </div>
-            </form>
+            }
         </div>
-    </div>
+
+        <hr class="my-4" style="border-color: var(--glms-border)">
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-glms-primary btn-icon">
+                <i class="bi bi-save"></i> Save Changes
+            </button>
+            <a asp-action="Index" class="btn btn-glms-secondary btn-icon">
+                <i class="bi bi-arrow-left"></i> Back to List
+            </a>
+        </div>
+    </form>
 </div>
 
 @section Scripts {

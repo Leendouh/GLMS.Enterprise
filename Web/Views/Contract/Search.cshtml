@@ -4,124 +4,144 @@
     ViewData["Title"] = "Search Contracts";
 }
 
-<div class="container mt-4">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a asp-action="Index">Contracts</a></li>
-            <li class="breadcrumb-item active">Search</li>
-        </ol>
-    </nav>
-
-    <div class="card">
-        <div class="card-header">
-            <h3 class="mb-0">Search Contracts</h3>
-        </div>
-        <div class="card-body">
-            <form asp-action="Search" method="get">
-                <input type="hidden" asp-for="PageSize" />
-                <div class="row mb-3">
-                    <div class="col-md-3">
-                        <label asp-for="StartDateFrom" class="form-label">Start Date From</label>
-                        <input asp-for="StartDateFrom" class="form-control" type="date" />
-                    </div>
-                    <div class="col-md-3">
-                        <label asp-for="StartDateTo" class="form-label">Start Date To</label>
-                        <input asp-for="StartDateTo" class="form-control" type="date" />
-                    </div>
-                    <div class="col-md-3">
-                        <label asp-for="Status" class="form-label">Status</label>
-                        <select asp-for="Status" class="form-select">
-                            <option value="">All Statuses</option>
-                            <option value="Draft">Draft</option>
-                            <option value="Active">Active</option>
-                            <option value="OnHold">On Hold</option>
-                            <option value="Expired">Expired</option>
-                            <option value="Terminated">Terminated</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3 d-flex align-items-end">
-                        <button type="submit" class="btn btn-primary w-100">
-                            <i class="bi bi-search"></i> Search
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
+<!-- Page Header -->
+<div class="glms-page-header">
+    <div>
+        <h1 class="glms-page-title">Search Contracts</h1>
+        <p class="glms-page-subtitle">Find contracts by date range and status filters.</p>
     </div>
+    <div>
+        <a asp-action="Index" class="btn btn-glms-secondary btn-icon">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+    </div>
+</div>
 
-    @if (Model.HasSearched)
-    {
-        <div class="card mt-4">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Results (@Model.TotalCount total)</h5>
-                @if (Model.TotalPages > 1)
-                {
-                    <span class="text-muted small">Page @Model.Page of @Model.TotalPages</span>
-                }
+<!-- Search Form -->
+<div class="glms-card mb-4">
+    <form asp-action="Search" method="get">
+        <input type="hidden" asp-for="PageSize" />
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label asp-for="StartDateFrom" class="form-label">Start Date From</label>
+                    <input asp-for="StartDateFrom" class="form-control" type="date" placeholder="Select date" />
+                </div>
             </div>
-            <div class="card-body">
-                @if (Model.Results != null && Model.Results.Any())
-                {
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Client</th>
-                                    <th>Status</th>
-                                    <th>Service Level</th>
-                                    <th>Start Date</th>
-                                    <th>End Date</th>
-                                    <th>Requests</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var contract in Model.Results)
-                                {
-                                    <tr>
-                                        <td><strong>@contract.ClientName</strong></td>
-                                        <td>
-                                            <span class="badge @(contract.Status.ToString() switch
-                                            {
-                                                "Active" => "bg-success",
-                                                "Draft" => "bg-secondary",
-                                                "OnHold" => "bg-warning",
-                                                "Expired" => "bg-danger",
-                                                "Terminated" => "bg-dark",
-                                                _ => "bg-secondary"
-                                            })">@contract.Status</span>
-                                        </td>
-                                        <td>@contract.ServiceLevel</td>
-                                        <td>@contract.StartDate.ToString("yyyy-MM-dd")</td>
-                                        <td>@contract.EndDate.ToString("yyyy-MM-dd")</td>
-                                        <td>
-                                            <span class="badge bg-info">@contract.ServiceRequestCount</span>
-                                        </td>
-                                        <td>
-                                            <a asp-action="Details" asp-route-id="@contract.Id" class="btn btn-sm btn-info">
-                                                <i class="bi bi-eye"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label asp-for="StartDateTo" class="form-label">Start Date To</label>
+                    <input asp-for="StartDateTo" class="form-control" type="date" placeholder="Select date" />
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label asp-for="Status" class="form-label">Status</label>
+                    <select asp-for="Status" class="form-select">
+                        <option value="">All Statuses</option>
+                        <option value="Draft">Draft</option>
+                        <option value="Active">Active</option>
+                        <option value="OnHold">On Hold</option>
+                        <option value="Expired">Expired</option>
+                        <option value="Terminated">Terminated</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <button type="submit" class="btn btn-glms-primary btn-icon w-100">
+                    <i class="bi bi-search"></i> Search
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
 
-                    @if (Model.TotalPages > 1)
-                    {
-                        <nav aria-label="Contract search pagination" class="mt-3">
-                            <ul class="pagination justify-content-center">
-                                <li class="page-item @(Model.Page <= 1 ? "disabled" : "")">
-                                    <a class="page-link" asp-action="Search"
-                                       asp-route-startDateFrom="@Model.StartDateFrom?.ToString("yyyy-MM-dd")"
-                                       asp-route-startDateTo="@Model.StartDateTo?.ToString("yyyy-MM-dd")"
-                                       asp-route-status="@Model.Status"
-                                       asp-route-page="@(Model.Page - 1)"
-                                       asp-route-pageSize="@Model.PageSize">Previous</a>
-                                </li>
-                                @for (var p = 1; p <= Model.TotalPages; p++)
-                                {
+<!-- Search Results -->
+@if (Model.HasSearched)
+{
+    <div class="glms-card">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="mb-0">Results (@Model.TotalCount total)</h5>
+            @if (Model.TotalPages > 1)
+            {
+                <span class="text-muted small">Page @Model.Page of @Model.TotalPages</span>
+            }
+        </div>
+        
+        @if (Model.Results != null && Model.Results.Any())
+        {
+            <div class="table-responsive">
+                <table class="glms-table">
+                    <thead>
+                        <tr>
+                            <th>Client</th>
+                            <th>Status</th>
+                            <th>Service Level</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Requests</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var contract in Model.Results)
+                        {
+                            <tr>
+                                <td><strong>@contract.ClientName</strong></td>
+                                <td>
+                                    @switch (contract.Status.ToString())
+                                    {
+                                        case "Active":
+                                            <span class="status-badge status-active">Active</span>
+                                            break;
+                                        case "Draft":
+                                            <span class="status-badge status-draft">Draft</span>
+                                            break;
+                                        case "OnHold":
+                                            <span class="status-badge status-onhold">On Hold</span>
+                                            break;
+                                        case "Expired":
+                                            <span class="status-badge status-expired">Expired</span>
+                                            break;
+                                        case "Terminated":
+                                            <span class="status-badge status-terminated">Terminated</span>
+                                            break;
+                                        default:
+                                            <span class="status-badge status-draft">@contract.Status</span>
+                                            break;
+                                    }
+                                </td>
+                                <td>@contract.ServiceLevel</td>
+                                <td>@contract.StartDate.ToString("MMM dd, yyyy")</td>
+                                <td>@contract.EndDate.ToString("MMM dd, yyyy")</td>
+                                <td>
+                                    <span class="badge-count">@contract.ServiceRequestCount</span>
+                                </td>
+                                <td>
+                                    <a asp-action="Details" asp-route-id="@contract.Id" class="btn btn-glms-icon btn-info" title="View Details">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            @if (Model.TotalPages > 1)
+            {
+                <nav aria-label="Contract search pagination" class="mt-4">
+                    <ul class="pagination justify-content-center glms-pagination">
+                        <li class="page-item @(Model.Page <= 1 ? "disabled" : "")">
+                            <a class="page-link" asp-action="Search"
+                               asp-route-startDateFrom="@Model.StartDateFrom?.ToString("yyyy-MM-dd")"
+                               asp-route-startDateTo="@Model.StartDateTo?.ToString("yyyy-MM-dd")"
+                               asp-route-status="@Model.Status"
+                               asp-route-page="@(Model.Page - 1)"
+                               asp-route-pageSize="@Model.PageSize">Previous</a>
+                        </li>
+                        @for (var p = 1; p <= Model.TotalPages; p++)
+                        {
                                     <li class="page-item @(p == Model.Page ? "active" : "")">
                                         <a class="page-link" asp-action="Search"
                                            asp-route-startDateFrom="@Model.StartDateFrom?.ToString("yyyy-MM-dd")"
@@ -130,24 +150,28 @@
                                            asp-route-page="@p"
                                            asp-route-pageSize="@Model.PageSize">@p</a>
                                     </li>
-                                }
-                                <li class="page-item @(Model.Page >= Model.TotalPages ? "disabled" : "")">
-                                    <a class="page-link" asp-action="Search"
-                                       asp-route-startDateFrom="@Model.StartDateFrom?.ToString("yyyy-MM-dd")"
-                                       asp-route-startDateTo="@Model.StartDateTo?.ToString("yyyy-MM-dd")"
-                                       asp-route-status="@Model.Status"
-                                       asp-route-page="@(Model.Page + 1)"
-                                       asp-route-pageSize="@Model.PageSize">Next</a>
-                                </li>
-                            </ul>
-                        </nav>
-                    }
-                }
-                else
-                {
-                    <p class="text-muted">No contracts found matching your criteria.</p>
-                }
+                        }
+                        <li class="page-item @(Model.Page >= Model.TotalPages ? "disabled" : "")">
+                            <a class="page-link" asp-action="Search"
+                               asp-route-startDateFrom="@Model.StartDateFrom?.ToString("yyyy-MM-dd")"
+                               asp-route-startDateTo="@Model.StartDateTo?.ToString("yyyy-MM-dd")"
+                               asp-route-status="@Model.Status"
+                               asp-route-page="@(Model.Page + 1)"
+                               asp-route-pageSize="@Model.PageSize">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            }
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <i class="bi bi-search" style="font-size: 3rem; color: var(--glms-text-muted)"></i>
+                <p class="text-muted mt-3">No contracts found matching your criteria.</p>
+                <a asp-action="Search" class="btn btn-sm btn-glms-secondary">
+                    <i class="bi bi-x-circle"></i> Clear Filters
+                </a>
             </div>
-        </div>
-    }
-</div>
+        }
+    </div>
+}

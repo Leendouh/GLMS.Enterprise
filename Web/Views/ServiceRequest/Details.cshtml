@@ -4,74 +4,93 @@
     ViewData["Title"] = "Service Request Details";
 }
 
-<div class="container mt-4">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a asp-action="Index">Service Requests</a></li>
-            <li class="breadcrumb-item active">Details</li>
-        </ol>
-    </nav>
+<!-- Page Header -->
+<div class="glms-page-header">
+    <div>
+        <h1 class="glms-page-title">Service Request Details</h1>
+        <p class="glms-page-subtitle">View service request information and currency conversion details.</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-glms-primary btn-icon">
+            <i class="bi bi-pencil"></i> Edit
+        </a>
+        <a asp-action="Index" class="btn btn-glms-secondary btn-icon">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+    </div>
+</div>
 
-    <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h3 class="mb-0">Service Request Details</h3>
-            <div>
-                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
-                    <i class="bi bi-pencil"></i> Edit
-                </a>
-                <a asp-action="Index" class="btn btn-secondary">
-                    <i class="bi bi-arrow-left"></i> Back
-                </a>
+<!-- Main Content -->
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="glms-card">
+            <h5 class="mb-4">Request Information</h5>
+            <div class="detail-row">
+                <span class="detail-label">Contract</span>
+                <span class="detail-value">
+                    <strong>@Model.Contract?.Client?.Name</strong>
+                    <br />
+                    <small class="text-muted">@Model.Contract?.ServiceLevel</small>
+                </span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Description</span>
+                <span class="detail-value">@Model.Description</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Status</span>
+                <span class="detail-value">
+                    @switch (Model.Status.ToString())
+                    {
+                        case "Pending":
+                            <span class="status-badge status-pending">Pending</span>
+                            break;
+                        case "Approved":
+                            <span class="status-badge status-active">Approved</span>
+                            break;
+                        case "InProgress":
+                            <span class="status-badge status-onhold">In Progress</span>
+                            break;
+                        case "Fulfilled":
+                            <span class="status-badge status-active">Fulfilled</span>
+                            break;
+                        case "Rejected":
+                            <span class="status-badge status-expired">Rejected</span>
+                            break;
+                        case "ContractExpired":
+                            <span class="status-badge status-terminated">Expired</span>
+                            break;
+                        default:
+                            <span class="status-badge status-draft">@Model.Status</span>
+                            break;
+                    }
+                </span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Created By</span>
+                <span class="detail-value">@Model.CreatedBy</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Created At</span>
+                <span class="detail-value">@Model.CreatedAt.ToString("MMM dd, yyyy HH:mm")</span>
             </div>
         </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-6">
-                    <dl class="row">
-                        <dt class="col-sm-4">Contract:</dt>
-                        <dd class="col-sm-8">
-                            <strong>@Model.Contract?.Client?.Name</strong>
-                            <br />
-                            <small class="text-muted">@Model.Contract?.ServiceLevel</small>
-                        </dd>
-                        <dt class="col-sm-4">Description:</dt>
-                        <dd class="col-sm-8">@Model.Description</dd>
-                        <dt class="col-sm-4">Status:</dt>
-                        <dd class="col-sm-8">
-                            <span class="badge @(Model.Status.ToString() switch
-                            {
-                                "Pending" => "bg-secondary",
-                                "Approved" => "bg-primary",
-                                "InProgress" => "bg-info",
-                                "Fulfilled" => "bg-success",
-                                "Rejected" => "bg-danger",
-                                "ContractExpired" => "bg-dark",
-                                _ => "bg-secondary"
-                            })">@Model.Status</span>
-                        </dd>
-                        <dt class="col-sm-4">Created By:</dt>
-                        <dd class="col-sm-8">@Model.CreatedBy</dd>
-                        <dt class="col-sm-4">Created At:</dt>
-                        <dd class="col-sm-8">@Model.CreatedAt.ToString("yyyy-MM-dd HH:mm")</dd>
-                    </dl>
-                </div>
-                <div class="col-md-6">
-                    <div class="card bg-light">
-                        <div class="card-header">
-                            <h5 class="mb-0">Currency Conversion</h5>
-                        </div>
-                        <div class="card-body">
-                            <dl class="row">
-                                <dt class="col-sm-6">Amount USD:</dt>
-                                <dd class="col-sm-6"><strong>USD @Model.AmountUSD.ToString("F2")</strong></dd>
-                                <dt class="col-sm-6">Exchange Rate:</dt>
-                                <dd class="col-sm-6">@Model.ExchangeRateUsed.ToString("F4")</dd>
-                                <dt class="col-sm-6">Amount ZAR:</dt>
-                                <dd class="col-sm-6"><strong class="text-success">ZAR @Model.AmountZAR.ToString("F2")</strong></dd>
-                            </dl>
-                        </div>
-                    </div>
-                </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="glms-card">
+            <h5 class="mb-4">Currency Conversion</h5>
+            <div class="detail-row">
+                <span class="detail-label">Amount USD</span>
+                <span class="detail-value"><strong>USD @Model.AmountUSD.ToString("F2")</strong></span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Exchange Rate</span>
+                <span class="detail-value">@Model.ExchangeRateUsed.ToString("F4")</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Amount ZAR</span>
+                <span class="detail-value"><strong class="text-success">ZAR @Model.AmountZAR.ToString("F2")</strong></span>
             </div>
         </div>
     </div>

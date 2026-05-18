@@ -4,95 +4,97 @@
     ViewData["Title"] = "Service Requests";
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Service Requests</h1>
-        <a asp-action="Create" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> New Service Request
+<!-- Page Header -->
+<div class="glms-page-header">
+    <div>
+        <h1 class="glms-page-title">Service Requests</h1>
+        <p class="glms-page-subtitle">Track and manage service requests with currency conversion.</p>
+    </div>
+    <div>
+        <a asp-action="Create" class="btn btn-glms-primary btn-icon">
+            <i class="bi bi-clipboard-plus"></i> New Service Request
         </a>
     </div>
+</div>
 
-    @if (TempData["Success"] != null)
+<!-- Main Content -->
+<div class="glms-card">
+    @if (Model != null && Model.Any())
     {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            @TempData["Success"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    }
-
-    @if (TempData["Warning"] != null)
-    {
-        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            @TempData["Warning"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    }
-
-    <div class="card">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
+        <div class="table-responsive">
+            <table class="glms-table">
+                <thead>
+                    <tr>
+                        <th>Contract</th>
+                        <th>Description</th>
+                        <th>Amount USD</th>
+                        <th>Amount ZAR</th>
+                        <th>Rate Used</th>
+                        <th>Status</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var req in Model)
+                    {
                         <tr>
-                            <th>Contract</th>
-                            <th>Description</th>
-                            <th>Amount USD</th>
-                            <th>Amount ZAR</th>
-                            <th>Rate Used</th>
-                            <th>Status</th>
-                            <th>Created</th>
-                            <th>Actions</th>
+                            <td><strong>@req.Contract?.Client?.Name</strong></td>
+                            <td>@req.Description</td>
+                            <td>USD @req.AmountUSD.ToString("F2")</td>
+                            <td>ZAR @req.AmountZAR.ToString("F2")</td>
+                            <td>@req.ExchangeRateUsed.ToString("F4")</td>
+                            <td>
+                                @switch (req.Status.ToString())
+                                {
+                                    case "Pending":
+                                        <span class="status-badge status-pending">Pending</span>
+                                        break;
+                                    case "Approved":
+                                        <span class="status-badge status-active">Approved</span>
+                                        break;
+                                    case "InProgress":
+                                        <span class="status-badge status-onhold">In Progress</span>
+                                        break;
+                                    case "Fulfilled":
+                                        <span class="status-badge status-active">Fulfilled</span>
+                                        break;
+                                    case "Rejected":
+                                        <span class="status-badge status-expired">Rejected</span>
+                                        break;
+                                    case "ContractExpired":
+                                        <span class="status-badge status-terminated">Expired</span>
+                                        break;
+                                    default:
+                                        <span class="status-badge status-draft">@req.Status</span>
+                                        break;
+                                }
+                            </td>
+                            <td>@req.CreatedAt.ToString("MMM dd, yyyy")</td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a asp-action="Details" asp-route-id="@req.Id" class="btn btn-glms-icon btn-info" title="View Details">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@req.Id" class="btn btn-glms-icon btn-warning" title="Edit">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@req.Id" class="btn btn-glms-icon btn-danger" title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @if (Model != null && Model.Any())
-                        {
-                            @foreach (var req in Model)
-                            {
-                                <tr>
-                                    <td><strong>@req.Contract?.Client?.Name</strong></td>
-                                    <td>@req.Description</td>
-                                    <td>USD @req.AmountUSD.ToString("F2")</td>
-                                    <td>ZAR @req.AmountZAR.ToString("F2")</td>
-                                    <td>@req.ExchangeRateUsed.ToString("F4")</td>
-                                    <td>
-                                        <span class="badge @(req.Status.ToString() switch
-                                        {
-                                            "Pending" => "bg-secondary",
-                                            "Approved" => "bg-primary",
-                                            "InProgress" => "bg-info",
-                                            "Fulfilled" => "bg-success",
-                                            "Rejected" => "bg-danger",
-                                            "ContractExpired" => "bg-dark",
-                                            _ => "bg-secondary"
-                                        })">@req.Status</span>
-                                    </td>
-                                    <td>@req.CreatedAt.ToString("yyyy-MM-dd")</td>
-                                    <td>
-                                        <div class="btn-group" role="group">
-                                            <a asp-action="Details" asp-route-id="@req.Id" class="btn btn-sm btn-info">
-                                                <i class="bi bi-eye"></i>
-                                            </a>
-                                            <a asp-action="Edit" asp-route-id="@req.Id" class="btn btn-sm btn-warning">
-                                                <i class="bi bi-pencil"></i>
-                                            </a>
-                                            <a asp-action="Delete" asp-route-id="@req.Id" class="btn btn-sm btn-danger">
-                                                <i class="bi bi-trash"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            }
-                        }
-                        else
-                        {
-                            <tr>
-                                <td colspan="8" class="text-center text-muted">No service requests found.</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
+                    }
+                </tbody>
+            </table>
         </div>
-    </div>
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <i class="bi bi-clipboard" style="font-size: 3rem; color: var(--glms-text-muted)"></i>
+            <p class="text-muted mt-3">No service requests found. Click "New Service Request" to create your first request.</p>
+        </div>
+    }
 </div>

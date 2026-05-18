@@ -4,52 +4,69 @@
     ViewData["Title"] = "Delete Service Request";
 }
 
-<div class="container mt-4">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a asp-action="Index">Service Requests</a></li>
-            <li class="breadcrumb-item active">Delete</li>
-        </ol>
-    </nav>
+<!-- Page Header -->
+<div class="glms-page-header">
+    <div>
+        <h1 class="glms-page-title">Delete Service Request</h1>
+        <p class="glms-page-subtitle">Remove this service request from the system.</p>
+    </div>
+</div>
 
-    <div class="card">
-        <div class="card-header bg-danger text-white">
-            <h3 class="mb-0">Delete Service Request</h3>
-        </div>
-        <div class="card-body">
-            <div class="alert alert-warning">
-                <i class="bi bi-exclamation-triangle"></i>
-                <strong>Warning:</strong> This action cannot be undone.
-            </div>
-
-            <dl class="row">
-                <dt class="col-sm-3">Contract:</dt>
-                <dd class="col-sm-9"><strong>@Model.Contract?.Client?.Name</strong></dd>
-                <dt class="col-sm-3">Description:</dt>
-                <dd class="col-sm-9">@Model.Description</dd>
-                <dt class="col-sm-3">Status:</dt>
-                <dd class="col-sm-9">@Model.Status</dd>
-                <dt class="col-sm-3">Amount USD:</dt>
-                <dd class="col-sm-9">USD @Model.AmountUSD.ToString("F2")</dd>
-                <dt class="col-sm-3">Amount ZAR:</dt>
-                <dd class="col-sm-9">ZAR @Model.AmountZAR.ToString("F2")</dd>
-                <dt class="col-sm-3">Exchange Rate:</dt>
-                <dd class="col-sm-9">@Model.ExchangeRateUsed.ToString("F4")</dd>
-                <dt class="col-sm-3">Created At:</dt>
-                <dd class="col-sm-9">@Model.CreatedAt.ToString("yyyy-MM-dd HH:mm")</dd>
-            </dl>
-
-            <form asp-action="DeleteConfirmed" method="post">
-                <input type="hidden" asp-for="Id" />
-                <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-danger">
-                        <i class="bi bi-trash"></i> Delete
-                    </button>
-                    <a asp-action="Index" class="btn btn-secondary">
-                        <i class="bi bi-arrow-left"></i> Back to List
-                    </a>
-                </div>
-            </form>
+<!-- Main Content -->
+<div class="glms-card">
+    <div class="alert alert-warning d-flex align-items-center">
+        <i class="bi bi-exclamation-triangle-fill me-2" style="font-size: 1.5rem"></i>
+        <div>
+            <strong>Warning:</strong> This action cannot be undone. Please review the information below before proceeding.
         </div>
     </div>
+
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="detail-row">
+                <span class="detail-label">Contract</span>
+                <span class="detail-value"><strong>@Model.Contract?.Client?.Name</strong></span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Description</span>
+                <span class="detail-value">@Model.Description</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Status</span>
+                <span class="detail-value">@Model.Status</span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="detail-row">
+                <span class="detail-label">Amount USD</span>
+                <span class="detail-value">USD @Model.AmountUSD.ToString("F2")</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Amount ZAR</span>
+                <span class="detail-value">ZAR @Model.AmountZAR.ToString("F2")</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Exchange Rate</span>
+                <span class="detail-value">@Model.ExchangeRateUsed.ToString("F4")</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Created At</span>
+                <span class="detail-value">@Model.CreatedAt.ToString("MMM dd, yyyy HH:mm")</span>
+            </div>
+        </div>
+    </div>
+
+    <hr class="my-4" style="border-color: var(--glms-border)">
+
+    <form asp-action="DeleteConfirmed" method="post">
+        <input type="hidden" asp-for="Id" />
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-glms-danger btn-icon">
+                <i class="bi bi-trash"></i> Delete Service Request
+            </button>
+            <a asp-action="Index" class="btn btn-glms-secondary btn-icon">
+                <i class="bi bi-arrow-left"></i> Back to List
+            </a>
+        </div>
+    </form>
 </div>
