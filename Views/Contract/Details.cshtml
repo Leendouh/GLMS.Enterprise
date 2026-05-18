@@ -1,0 +1,97 @@
+@model GLMS.Enterprise.Core.Entities.Contract
+
+@{
+    ViewData["Title"] = "Contract Details";
+}
+
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-action="Index">Contracts</a></li>
+            <li class="breadcrumb-item active">Details</li>
+        </ol>
+    </nav>
+
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h3 class="mb-0">Contract Details</h3>
+            <div>
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                    <i class="bi bi-pencil"></i> Edit
+                </a>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Back
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <dl class="row">
+                        <dt class="col-sm-4">Client:</dt>
+                        <dd class="col-sm-8"><strong>@Model.Client?.Name</strong></dd>
+                        <dt class="col-sm-4">Status:</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge @(Model.Status.ToString() switch
+                            {
+                                "Active" => "bg-success",
+                                "Draft" => "bg-secondary",
+                                "OnHold" => "bg-warning",
+                                "Expired" => "bg-danger",
+                                "Terminated" => "bg-dark",
+                                _ => "bg-secondary"
+                            })">@Model.Status</span>
+                        </dd>
+                        <dt class="col-sm-4">Service Level:</dt>
+                        <dd class="col-sm-8">@Model.ServiceLevel</dd>
+                        <dt class="col-sm-4">Start Date:</dt>
+                        <dd class="col-sm-8">@Model.StartDate.ToString("yyyy-MM-dd")</dd>
+                        <dt class="col-sm-4">End Date:</dt>
+                        <dd class="col-sm-8">@Model.EndDate.ToString("yyyy-MM-dd")</dd>
+                        <dt class="col-sm-4">Created By:</dt>
+                        <dd class="col-sm-8">@Model.CreatedBy</dd>
+                        <dt class="col-sm-4">Created At:</dt>
+                        <dd class="col-sm-8">@Model.CreatedAt.ToString("yyyy-MM-dd HH:mm")</dd>
+                    </dl>
+                </div>
+                <div class="col-md-6">
+                    <h5>Signed Agreement</h5>
+                    @if (!string.IsNullOrEmpty(Model.PdfFilePath))
+                    {
+                        <a asp-action="DownloadPdf" asp-route-id="@Model.Id" class="btn btn-primary mb-3">
+                            <i class="bi bi-download"></i> Download PDF
+                        </a>
+                        <p class="text-muted">@Model.OriginalPdfFileName</p>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No PDF uploaded.</p>
+                    }
+
+                    <h5 class="mt-4">Service Requests (@Model.ServiceRequests.Count)</h5>
+                    @if (Model.ServiceRequests.Any())
+                    {
+                        <div class="list-group">
+                            @foreach (var req in Model.ServiceRequests)
+                            {
+                                <a asp-controller="ServiceRequest" asp-action="Details" asp-route-id="@req.Id"
+                                   class="list-group-item list-group-item-action">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">@req.Description</h6>
+                                        <small>@req.Status</small>
+                                    </div>
+                                    <p class="mb-1">USD @req.AmountUSD:F2 → ZAR @req.AmountZAR:F2</p>
+                                    <small>Rate: @req.ExchangeRateUsed:F4</small>
+                                </a>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No service requests yet.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

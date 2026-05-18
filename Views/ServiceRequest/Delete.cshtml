@@ -1,0 +1,55 @@
+@model GLMS.Enterprise.Core.Entities.ServiceRequest
+
+@{
+    ViewData["Title"] = "Delete Service Request";
+}
+
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-action="Index">Service Requests</a></li>
+            <li class="breadcrumb-item active">Delete</li>
+        </ol>
+    </nav>
+
+    <div class="card">
+        <div class="card-header bg-danger text-white">
+            <h3 class="mb-0">Delete Service Request</h3>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-warning">
+                <i class="bi bi-exclamation-triangle"></i>
+                <strong>Warning:</strong> This action cannot be undone.
+            </div>
+
+            <dl class="row">
+                <dt class="col-sm-3">Contract:</dt>
+                <dd class="col-sm-9"><strong>@Model.Contract?.Client?.Name</strong></dd>
+                <dt class="col-sm-3">Description:</dt>
+                <dd class="col-sm-9">@Model.Description</dd>
+                <dt class="col-sm-3">Status:</dt>
+                <dd class="col-sm-9">@Model.Status</dd>
+                <dt class="col-sm-3">Amount USD:</dt>
+                <dd class="col-sm-9">USD @Model.AmountUSD.ToString("F2")</dd>
+                <dt class="col-sm-3">Amount ZAR:</dt>
+                <dd class="col-sm-9">ZAR @Model.AmountZAR.ToString("F2")</dd>
+                <dt class="col-sm-3">Exchange Rate:</dt>
+                <dd class="col-sm-9">@Model.ExchangeRateUsed.ToString("F4")</dd>
+                <dt class="col-sm-3">Created At:</dt>
+                <dd class="col-sm-9">@Model.CreatedAt.ToString("yyyy-MM-dd HH:mm")</dd>
+            </dl>
+
+            <form asp-action="DeleteConfirmed" method="post">
+                <input type="hidden" asp-for="Id" />
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> Delete
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

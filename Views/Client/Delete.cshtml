@@ -1,0 +1,73 @@
+@model GLMS.Enterprise.Core.Entities.Client
+
+@{
+    ViewData["Title"] = "Delete Client";
+}
+
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-action="Index">Clients</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Delete</li>
+        </ol>
+    </nav>
+
+    <div class="card">
+        <div class="card-header bg-danger text-white">
+            <h3 class="mb-0">Delete Client</h3>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-warning">
+                <i class="bi bi-exclamation-triangle"></i>
+                <strong>Warning:</strong> This action cannot be undone.
+            </div>
+
+            <dl class="row">
+                <dt class="col-sm-3">Name:</dt>
+                <dd class="col-sm-9">@Model.Name</dd>
+
+                <dt class="col-sm-3">Contact Email:</dt>
+                <dd class="col-sm-9">@Model.ContactEmail</dd>
+
+                <dt class="col-sm-3">Contact Phone:</dt>
+                <dd class="col-sm-9">@Model.ContactPhone</dd>
+
+                <dt class="col-sm-3">Region:</dt>
+                <dd class="col-sm-9">@Model.Region</dd>
+
+                <dt class="col-sm-3">Address:</dt>
+                <dd class="col-sm-9">@Model.Address</dd>
+
+                <dt class="col-sm-3">Contracts:</dt>
+                <dd class="col-sm-9">
+                    @if (Model.Contracts.Any())
+                    {
+                        <span class="badge bg-danger">@Model.Contracts.Count contracts</span>
+                        <p class="text-danger mt-2">
+                            <small>This client has contracts and cannot be deleted.</small>
+                        </p>
+                    }
+                    else
+                    {
+                        <span class="badge bg-success">No contracts</span>
+                    }
+                </dd>
+            </dl>
+
+            <form asp-action="DeleteConfirmed" method="post">
+                <input type="hidden" asp-for="Id" />
+                <div class="d-flex gap-2">
+                    @if (!Model.Contracts.Any())
+                    {
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Delete
+                        </button>
+                    }
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

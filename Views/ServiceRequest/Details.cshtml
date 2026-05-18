@@ -1,0 +1,78 @@
+@model GLMS.Enterprise.Core.Entities.ServiceRequest
+
+@{
+    ViewData["Title"] = "Service Request Details";
+}
+
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-action="Index">Service Requests</a></li>
+            <li class="breadcrumb-item active">Details</li>
+        </ol>
+    </nav>
+
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h3 class="mb-0">Service Request Details</h3>
+            <div>
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                    <i class="bi bi-pencil"></i> Edit
+                </a>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Back
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <dl class="row">
+                        <dt class="col-sm-4">Contract:</dt>
+                        <dd class="col-sm-8">
+                            <strong>@Model.Contract?.Client?.Name</strong>
+                            <br />
+                            <small class="text-muted">@Model.Contract?.ServiceLevel</small>
+                        </dd>
+                        <dt class="col-sm-4">Description:</dt>
+                        <dd class="col-sm-8">@Model.Description</dd>
+                        <dt class="col-sm-4">Status:</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge @(Model.Status.ToString() switch
+                            {
+                                "Pending" => "bg-secondary",
+                                "Approved" => "bg-primary",
+                                "InProgress" => "bg-info",
+                                "Fulfilled" => "bg-success",
+                                "Rejected" => "bg-danger",
+                                "ContractExpired" => "bg-dark",
+                                _ => "bg-secondary"
+                            })">@Model.Status</span>
+                        </dd>
+                        <dt class="col-sm-4">Created By:</dt>
+                        <dd class="col-sm-8">@Model.CreatedBy</dd>
+                        <dt class="col-sm-4">Created At:</dt>
+                        <dd class="col-sm-8">@Model.CreatedAt.ToString("yyyy-MM-dd HH:mm")</dd>
+                    </dl>
+                </div>
+                <div class="col-md-6">
+                    <div class="card bg-light">
+                        <div class="card-header">
+                            <h5 class="mb-0">Currency Conversion</h5>
+                        </div>
+                        <div class="card-body">
+                            <dl class="row">
+                                <dt class="col-sm-6">Amount USD:</dt>
+                                <dd class="col-sm-6"><strong>USD @Model.AmountUSD.ToString("F2")</strong></dd>
+                                <dt class="col-sm-6">Exchange Rate:</dt>
+                                <dd class="col-sm-6">@Model.ExchangeRateUsed.ToString("F4")</dd>
+                                <dt class="col-sm-6">Amount ZAR:</dt>
+                                <dd class="col-sm-6"><strong class="text-success">ZAR @Model.AmountZAR.ToString("F2")</strong></dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

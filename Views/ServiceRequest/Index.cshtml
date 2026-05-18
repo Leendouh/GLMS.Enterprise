@@ -1,0 +1,98 @@
+@model IEnumerable<GLMS.Enterprise.Core.Entities.ServiceRequest>
+
+@{
+    ViewData["Title"] = "Service Requests";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Service Requests</h1>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> New Service Request
+        </a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["Warning"] != null)
+    {
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            @TempData["Warning"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Contract</th>
+                            <th>Description</th>
+                            <th>Amount USD</th>
+                            <th>Amount ZAR</th>
+                            <th>Rate Used</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            @foreach (var req in Model)
+                            {
+                                <tr>
+                                    <td><strong>@req.Contract?.Client?.Name</strong></td>
+                                    <td>@req.Description</td>
+                                    <td>USD @req.AmountUSD.ToString("F2")</td>
+                                    <td>ZAR @req.AmountZAR.ToString("F2")</td>
+                                    <td>@req.ExchangeRateUsed.ToString("F4")</td>
+                                    <td>
+                                        <span class="badge @(req.Status.ToString() switch
+                                        {
+                                            "Pending" => "bg-secondary",
+                                            "Approved" => "bg-primary",
+                                            "InProgress" => "bg-info",
+                                            "Fulfilled" => "bg-success",
+                                            "Rejected" => "bg-danger",
+                                            "ContractExpired" => "bg-dark",
+                                            _ => "bg-secondary"
+                                        })">@req.Status</span>
+                                    </td>
+                                    <td>@req.CreatedAt.ToString("yyyy-MM-dd")</td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a asp-action="Details" asp-route-id="@req.Id" class="btn btn-sm btn-info">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a asp-action="Edit" asp-route-id="@req.Id" class="btn btn-sm btn-warning">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a asp-action="Delete" asp-route-id="@req.Id" class="btn btn-sm btn-danger">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="8" class="text-center text-muted">No service requests found.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
